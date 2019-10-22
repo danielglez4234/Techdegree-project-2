@@ -99,7 +99,7 @@ body{
   margin: 40px 0 0 0;
   text-align: center;
 }
- 
+
   .pagination li{
     display: inline;
   }
@@ -110,6 +110,7 @@ body{
       padding: 3px 8px;
       text-decoration: none;
       color: #4ba6c3;
+      cursor: pointer;
     }
 
     .pagination li a.active,
