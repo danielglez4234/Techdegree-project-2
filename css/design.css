@@ -109,11 +109,12 @@ body{
       padding: 3px 8px;
       text-decoration: none;
       color: #4ba6c3;
-      cursor: pointer;
+  cursor: pointer;
     }
 
     .pagination li a.active,
     .pagination li a:hover{
       background-color: #4ba6c3;
       color: #fff;
+
     }

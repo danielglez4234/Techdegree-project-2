@@ -5,7 +5,7 @@ FSJS project 2 - List Filter and Pagination
 
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
-const list = document.querySelectorAll('.student-item');
+const students = document.querySelectorAll('.student-item');
 const itemsPerPage =  10;
 
 /***
@@ -26,7 +26,7 @@ const endIndex = page * itemsPerPage - 1;
     }
   }
 }
-showpage(list, 1);
+showpage(students, 1);
 
 /***
    Create the `appendPageLinks function` to generate, append, and add
@@ -58,7 +58,7 @@ function createAndAppend(element, append_to, property, value, second_property, s
 
   const searchDiv = createAndAppend('div', pageHeaderDiv, 'className', 'student-search');
   const inputSearch = createAndAppend('input', searchDiv, 'type', 'search', 'placeholder', 'Search for students...');
-  const searchButton = createAndAppend('button', searchDiv, 'textContent', 'Search');
+  const buttonSearch = createAndAppend('button', searchDiv, 'textContent', 'Search');
   //----------------------- End search elements -------
 
 }
@@ -71,6 +71,12 @@ const calculatePageTotal = (list) =>{
   const li = document.querySelector('.pagination li');
   const pageTotal = Math.ceil(list.length / itemsPerPage);
 
+  const searchForA = document.querySelectorAll('.pagination li a');
+  if (searchForA !== 'undefined') {
+    for (let i = 0; i < searchForA.length; i++) {
+      li.removeChild(searchForA[i]);
+    }
+  }
 
   //for every page, add li and a tags with the page number text
   for (let i = 0; i < pageTotal; i++) {
@@ -90,12 +96,15 @@ const calculatePageTotal = (list) =>{
 
   li.appendChild(a);
   }
+
   // This 'const' gets the first 'a' of the 'li' and adds the active class - this is because when we enters the page we will allways be on page 1
   const firstActive = document.querySelector('li a');
-  firstActive.className = 'active';
+  if (firstActive !== null) {
+    firstActive.className = 'active';
+  }
 }
 //----------------------- End show and move through pages ------
-calculatePageTotal(list);
+calculatePageTotal(students);
 
 
 //----------------------------- Search For Results--------------
@@ -105,8 +114,7 @@ const searchInput = document.querySelector('input');
 const studentsNames = document.querySelectorAll('.student-details h3'); //store the h3 elements where  the names are found
 
 const matchResultsFound = document.createElement('h2');// here the text "total Results Found For: " will be shown
-matchResultsFound.style.margin = '40px 0px 0px 0px';
-matchResultsFound.style.display = '';
+matchResultsFound.style.margin = '50px -120px 15px';
 
 const pagerDiv = document.querySelector('.page-header'); // here we attach the h2 in the div '.page-header'
 pagerDiv.appendChild(matchResultsFound);
@@ -123,23 +131,28 @@ searchInput.addEventListener('keyup', (event) =>{
   for (let i = 0; i < studentsNames.length; i++) {
     const studentsMatch = studentsNames[i].textContent;
     if (studentsMatch.indexOf(searchContent) !== -1) {
-      resultsFound.push(studentsMatch[i]);
-
+      resultsFound.push(studentLI[i]);
       studentLI[i].style.display = '';
       total = resultsFound.length;
-      matchResultsFound.textContent = total + ' Results Found For: ' + searchContent;
 
-      calculatePageTotal(resultsFound);
-         if (searchContent == '') {
-          matchResultsFound.textContent ='';
-          // calculatePageTotal(list);
-          showpage(list, 1);
-        }
+      matchResultsFound.textContent = total + ' Results Found For: ' + searchContent;
     }else {
       studentLI[i].style.display = 'none';
     }
   }
+
+ if (resultsFound.indexOf(searchContent) === -1 && total < 1) {
+   matchResultsFound.textContent = 'NO Results Found For: ' + searchContent;
+   calculatePageTotal(0);
+ }else if (searchContent == '') {
+   matchResultsFound.textContent ='';
+   calculatePageTotal(list);
+   showpage(list, 1);
+ }
+calculatePageTotal(resultsFound);
+showpage(resultsFound, 1);
+
 });
 }
 //----------------------------- End Search For Results----------
-searchForResults(list);
+searchForResults(students);
