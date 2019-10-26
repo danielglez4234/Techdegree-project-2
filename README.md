@@ -1,6 +1,7 @@
 # Techdegree-project-2
  #unit2
 
+
 * I attempted to earn an “Exceeds Expectations” grade.
 “Extra Credit” features I added:
 - Add search component
