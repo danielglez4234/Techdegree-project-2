@@ -66,17 +66,17 @@ const calculatePageTotal = (list) =>{
 
 // This section is to avoid duplication when paging the search, it delete all <a> if they exist and below are replaced
   const searchForA = document.querySelectorAll('.pagination li a');
-  if (searchForA !== 'undefined') { // this prevents it from running the first time when there is no <a> to delete
+  if (searchForA !== 'undefined') { // this prevents it from running when there is no <a> to delete
     for (let i = 0; i < searchForA.length; i++) {
       li.removeChild(searchForA[i]);
     }
   }
-  //for every page, add <a> tags with the page number text
+  // for each page a <a> tag is added
   for (let i = 0; i < pageTotal; i++) {
-    const num = 1;
+    const num = 1; // 'num' prevents the first <a> from starting at 0
     const a = document.createElement('a');
     a.textContent = num + i;
-    // it adds an event listener to each <a> tag. When they are clicked it calls the showPage function to display the appropriate page
+    // it adds an event listener to each <a> tag. When they are clicked it calls the showPage function to display the associated page
     a.addEventListener('click', (event) =>{
       showpage(list, a.textContent);
       const activeA = document.querySelectorAll('li a');
@@ -89,8 +89,7 @@ const calculatePageTotal = (list) =>{
 
   li.appendChild(a);
   }
-  /* This 'const' gets the first 'a' of the 'li' and adds the active class
-  this is because when we enters the page we will allways be on page 1 */
+  // This gets the first <a> of the <li> and adds the active class,
   const firstActive = document.querySelector('li a');
   if (firstActive !== null) { // This prevents an error from jumping when there is no <a> to change the class
     firstActive.className = 'active';
@@ -105,15 +104,15 @@ calculatePageTotal(students);
 const searchForResults = (list) => {
 
 const searchInput = document.querySelector('input');
-const studentsNames = document.querySelectorAll('.student-details h3'); //store the h3 elements where  the names are found
+const studentsNames = document.querySelectorAll('.student-details h3'); //store the <h3> elements where the names are found
 
-const alertOfResultsFound = document.createElement('h2');// here the text "total Results Found For: " will be shown
+const alertOfResultsFound = document.createElement('h2');// here the text "total Results Found For: " will be display
 alertOfResultsFound.style.margin = '50px -120px 15px';
 
-const pagerDiv = document.querySelector('.page-header'); // here we attach the h2 in the div '.page-header'
+const pagerDiv = document.querySelector('.page-header');
 pagerDiv.appendChild(alertOfResultsFound);
 
-const studentLI = document.querySelectorAll('.student-item'); // we get the li elements to use them in the addEventListener
+const studentLI = document.querySelectorAll('.student-item'); // we get the <li> elements to use them in the addEventListener
 
 
 searchInput.addEventListener('keyup', (event) =>{
@@ -124,8 +123,8 @@ searchInput.addEventListener('keyup', (event) =>{
 
   for (let i = 0; i < studentsNames.length; i++) { // loop over the students names
     const studentsMatch = studentsNames[i].textContent;
-    if (studentsMatch.indexOf(searchContent) !== -1) { // when one result matches is shown and the others hide
-      resultsFound.push(studentLI[i]);
+    if (studentsMatch.indexOf(searchContent) !== -1) { // when a result matches it's shown and those that do not, are hide
+      resultsFound.push(studentLI[i]); // push the students found in the new array
       studentLI[i].style.display = '';
       total = resultsFound.length;
 
