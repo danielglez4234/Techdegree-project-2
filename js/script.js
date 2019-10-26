@@ -8,17 +8,13 @@ FSJS project 2 - List Filter and Pagination
 const students = document.querySelectorAll('.student-item');
 const itemsPerPage =  10;
 
-/***
-   Create the `showPage` function to hide all of the items in the
-   list except for the ten you want to show.
-***/
 
-const showpage = (list, page) => {
+const showpage = (list, page) => { // show the corresponding students to each page
 
 const startIndex = (page * itemsPerPage) - itemsPerPage;
 const endIndex = page * itemsPerPage - 1;
 
-  for (let i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) { // loop over the list elements that have been sent
     if (i >= startIndex && i <= endIndex) {
       list[i].style.display = '';
     }else {
@@ -28,10 +24,6 @@ const endIndex = page * itemsPerPage - 1;
 }
 showpage(students, 1);
 
-/***
-   Create the `appendPageLinks function` to generate, append, and add
-   functionality to the pagination buttons.
-***/
 
 const appendPageLinks = () => {
 // function that creates, adds properties and attaches elements
@@ -57,33 +49,34 @@ function createAndAppend(element, append_to, property, value, second_property, s
   const pageHeaderDiv = document.querySelector('.page-header');
 
   const searchDiv = createAndAppend('div', pageHeaderDiv, 'className', 'student-search');
-  const inputSearch = createAndAppend('input', searchDiv, 'type', 'search', 'placeholder', 'Search for students...');
+  const inputSearch = createAndAppend('input', searchDiv, 'type', 'text', 'placeholder', 'Search for students...');
   const buttonSearch = createAndAppend('button', searchDiv, 'textContent', 'Search');
   //----------------------- End search elements -------
-
 }
 appendPageLinks();
 
-//----------------------- Show and move through pages ----------
-/*** TESTING : I separate this section of appendPageLinks() so I can try to calculate
-the pages dynamically with the searchForResults() function ***/
+
+//---------****--------- Show and move through pages ------****--------
+/***
+I separated this section from 'appendPageLinks();' and turned it into a function to make it clearer for me
+***/
 const calculatePageTotal = (list) =>{
   const li = document.querySelector('.pagination li');
   const pageTotal = Math.ceil(list.length / itemsPerPage);
 
+// This section is to avoid duplication when paging the search, it delete all <a> if they exist and below are replaced
   const searchForA = document.querySelectorAll('.pagination li a');
-  if (searchForA !== 'undefined') {
+  if (searchForA !== 'undefined') { // this prevents it from running the first time when there is no <a> to delete
     for (let i = 0; i < searchForA.length; i++) {
       li.removeChild(searchForA[i]);
     }
   }
-
-  //for every page, add li and a tags with the page number text
+  //for every page, add <a> tags with the page number text
   for (let i = 0; i < pageTotal; i++) {
     const num = 1;
     const a = document.createElement('a');
     a.textContent = num + i;
-    // it adds an event listener to each a tag. When they are clicked it calls the showPage function to display the appropriate page
+    // it adds an event listener to each <a> tag. When they are clicked it calls the showPage function to display the appropriate page
     a.addEventListener('click', (event) =>{
       showpage(list, a.textContent);
       const activeA = document.querySelectorAll('li a');
@@ -96,28 +89,29 @@ const calculatePageTotal = (list) =>{
 
   li.appendChild(a);
   }
-
-  // This 'const' gets the first 'a' of the 'li' and adds the active class - this is because when we enters the page we will allways be on page 1
+  /* This 'const' gets the first 'a' of the 'li' and adds the active class
+  this is because when we enters the page we will allways be on page 1 */
   const firstActive = document.querySelector('li a');
-  if (firstActive !== null) {
+  if (firstActive !== null) { // This prevents an error from jumping when there is no <a> to change the class
     firstActive.className = 'active';
   }
 }
-//----------------------- End show and move through pages ------
+
 calculatePageTotal(students);
 
 
-//----------------------------- Search For Results--------------
+
+//-------------****---------------- Search For Results-----------****---
 const searchForResults = (list) => {
 
 const searchInput = document.querySelector('input');
 const studentsNames = document.querySelectorAll('.student-details h3'); //store the h3 elements where  the names are found
 
-const matchResultsFound = document.createElement('h2');// here the text "total Results Found For: " will be shown
-matchResultsFound.style.margin = '50px -120px 15px';
+const alertOfResultsFound = document.createElement('h2');// here the text "total Results Found For: " will be shown
+alertOfResultsFound.style.margin = '50px -120px 15px';
 
 const pagerDiv = document.querySelector('.page-header'); // here we attach the h2 in the div '.page-header'
-pagerDiv.appendChild(matchResultsFound);
+pagerDiv.appendChild(alertOfResultsFound);
 
 const studentLI = document.querySelectorAll('.student-item'); // we get the li elements to use them in the addEventListener
 
@@ -128,27 +122,28 @@ searchInput.addEventListener('keyup', (event) =>{
   const resultsFound = [];
   let total = 0;
 
-  for (let i = 0; i < studentsNames.length; i++) {
+  for (let i = 0; i < studentsNames.length; i++) { // loop over the students names
     const studentsMatch = studentsNames[i].textContent;
-    if (studentsMatch.indexOf(searchContent) !== -1) {
+    if (studentsMatch.indexOf(searchContent) !== -1) { // when one result matches is shown and the others hide
       resultsFound.push(studentLI[i]);
       studentLI[i].style.display = '';
       total = resultsFound.length;
 
-      matchResultsFound.textContent = total + ' Results Found For: ' + searchContent;
+      alertOfResultsFound.textContent = total + ' Results Found For: ' + searchContent;
     }else {
       studentLI[i].style.display = 'none';
     }
   }
 
- if (resultsFound.indexOf(searchContent) === -1 && total < 1) {
-   matchResultsFound.textContent = 'NO Results Found For: ' + searchContent;
+ if (resultsFound.indexOf(searchContent) === -1 && total < 1) { // when none of the results match
+   alertOfResultsFound.textContent = 'NO Results Found For: ' + searchContent;
    calculatePageTotal(0);
- }else if (searchContent == '') {
-   matchResultsFound.textContent ='';
+ }else if (searchContent == '') { // return the page to its normal form when there is nothing written
+   alertOfResultsFound.textContent ='';
    calculatePageTotal(list);
    showpage(list, 1);
  }
+
 calculatePageTotal(resultsFound);
 showpage(resultsFound, 1);
 
